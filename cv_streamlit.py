@@ -72,11 +72,11 @@ def perform_cross_validation(x, y, k):
     return scores
 
 def main():
-    st.title("K-Fold Cross-Validation in Simple Linear Regression")
+    st.title("Cross-Validation in Car Price Prediction🚗")
 
     # Extensive introduction and detailed explanation
     st.markdown("""
-    ## Cross-Validation in Linear Regression: An In-depth Exploration
+    ## Cross-Validation in Multiple Linear Regression: An In-depth Exploration
     
     ### Introduction
     Cross-validation stands as a cornerstone technique in the realm of statistical analysis and predictive modeling. This method evaluates the efficacy of a model by partitioning the original dataset into complementary subsets, where one subset is used to train the model and the other to test its performance. This validation approach is essential for verifying the generalizability and robustness of predictive models, ensuring they perform consistently across various sets of data.
@@ -97,19 +97,13 @@ def main():
     - **Leave-One-Out (LOO) Cross-Validation**:
       - In LOO, each observation is used as a separate test set, while the rest serve as the training set. This method is particularly beneficial when the dataset is small, as it maximizes the training data. However, it can be computationally expensive.
 
-    ### Advantages of Cross-Validation
-    - **Robustness**:
-      - By using multiple subsets of the data for training and testing, cross-validation provides a robust measure of model’s performance, reducing the variability and enhancing the reliability of the model assessment.
-    - **Resource Efficiency**:
-      - It makes efficient use of available data, ensuring every observation is used for both training and validation, thus maximizing data utility and avoiding wastage.
-    - **Versatility and Flexibility**:
-      - Cross-validation can be applied to any model, whether it’s linear, logistic, or any other type of regression or classification model. This flexibility makes it an indispensable tool across various domains of data analysis.
-      
-    ### Implementing Cross-Validation
-    - **Practical Considerations**:
-      - The choice of the number of folds in K-fold cross-validation typically balances between computational cost and model performance reliability. A common practice is to use 10 folds, which has been empirically shown to yield a reliable estimate of model performance.
-    - **Software and Tools**:
-      - Several statistical software packages and programming libraries support cross-validation. Python’s Scikit-learn, for instance, offers extensive support for implementing various forms of cross-validation, with built-in functions that simplify the application of these techniques.
+ 
+    ### Car Price Prediction User Case
+      - In the context of predictive modeling and statistical analysis, cross-validation serves as a cornerstone technique that assesses a model's performance by partitioning the original dataset into complementary subsets—where one subset is used to train the model, and the other is used to test its accuracy. This approach is particularly important for ensuring the generalizability and robustness of predictive models, verifying that they perform consistently across different sets of data.
+
+      - For our "Car Price Prediction Challenge," we utilize a dataset comprising 19,237 rows and 18 columns, with features ranging from basic car attributes like manufacturer, model, and production year, to specific details such as engine volume, mileage, and the number of airbags. The target variable, "Price," represents the car's selling price, which we aim to predict using various regression models.
+
+      - The cross-validation process in this project is essential for determining how well our model can predict car prices on unseen data. By systematically splitting the dataset into training and testing subsets, we can evaluate different machine learning algorithms and fine-tune hyperparameters to enhance the model's predictive power. This ensures that the model does not merely memorize the training data but instead learns patterns that generalize well to new cars with varying features.
       """)
     
         # Data generation and plotting
@@ -120,7 +114,6 @@ def main():
     ax.set_xlabel("Predictor")
     ax.set_ylabel("Response")
     ax.grid(True)
-    st.pyplot(fig)
 
     # Slider for choosing K
     k = st.slider("Choose the number of folds for K-fold Cross-Validation", min_value=2, max_value=20, value=5, step=1)
@@ -135,42 +128,53 @@ def main():
         st.write(f"Average {criteria} score: **{np.mean(scores[criteria])}**")
 
     st.markdown("""   
-    ### Steps of Cross-Validation: A Step-by-Step Guide
-    **Step 1: Prepare Your Data**
-    - Data Cleaning: Begin by cleaning your dataset. This includes handling missing values, removing duplicates, and ensuring data consistency.
-    - Feature Selection: Identify which features (variables) in the dataset will be included in the model. This might involve exploratory data analysis and feature engineering to create new variables that can improve model performance.
-    
-    **Step 2: Split the Data into K Folds**
-    - Divide Equally: Partition the data into ‘K’ equal or nearly equal subsets. The value of ‘K’ is chosen based on the size of the dataset and the balance between computational efficiency and model evaluation precision.
-    - Stratification (Optional): For classification problems, ensure each fold represents the overall composition of the output variable through stratification. This means each fold contains approximately the same percentage of samples of each target class as the original dataset.
-    
-    **Step 3: Execute the Cross-Validation**
-    - Iterate Through Folds: For each of the ‘K’ folds:
-    - Training Set Creation: Use ‘K-1’ folds as the training set.
-    - Testing Set Selection: Use the remaining fold as the testing set.
-    - Model Training: Train the model on the ‘K-1’ folds designated as the training set.
-    - Model Testing: Evaluate the model using the fold reserved as the testing set.
-    
-    **Step 4: Evaluate and Aggregate the Results**
-    - Performance Metrics: After testing the model on each fold, record the performance metrics such as accuracy, precision, recall, F1-score, or mean squared error, depending on the type of model (classification or regression).
-        - When using the cross_val_score function from Scikit-learn with a model such as LinearRegression, you can specify different scoring parameters depending on what aspect of the model’s performance you wish to evaluate. For regression models like LinearRegression, common scoring options include:
-            - 'r2': The coefficient of determination  R^2  score. It provides an indication of goodness of fit and the percentage of the response variable variation that is explained by a linear model.  R^2  is probably the most commonly used metric for evaluating the performance of regression models.
-            - 'neg_mean_squared_error': Negative mean squared error. It is a risk metric corresponding to the expected value of the squared (quadratic) error or loss. The higher this number (less negative), the better, as it indicates a model with lesser errors on average. The ‘neg_’ prefix indicates that a higher score is better and allows for consistency when comparing with other metrics (which assume that a higher score is better).
-            - 'neg_mean_absolute_error': Negative mean absolute error. This measures the average magnitude of the errors in a set of predictions, without considering their direction (i.e., it averages the absolute values of the errors).
-            - 'neg_root_mean_squared_error': Negative root mean squared error. This is the square root of the mean of the squared errors. RMSE is sensitive to outliers and can give a clearer idea of the model performance when large errors are particularly undesirable.
-            - 'neg_median_absolute_error': Negative median absolute error. This metric is particularly interesting because it is robust to outliers. The median of all absolute differences between the targets and the predictions can be a more representative metric of the typical prediction error than the mean error.
-            - 'max_error': The maximum residual error. A metric that captures the worst case error between the predicted value and the true value. In a forecasting context, this can provide you with worst-case scenario information.
-            - 'explained_variance': Measures the proportion to which a mathematical model accounts for the variation (dispersion) of a given dataset. Unlike  R^2 , this metric does not necessarily penalize excessive complexity in the model, making it useful when you want to capture the variance explained by the model but are less concerned about the model’s simplicity.
-    - Aggregate Outcomes: Calculate the average of the performance metrics across all ‘K’ folds to obtain an overall estimate of the model’s effectiveness.
-    
-    **Step 5: Model Selection and Adjustment**
-    - Compare Models: If multiple models are being tested, compare the aggregated results from the cross-validation process to select the best-performing model.
-    - Tune Hyperparameters: Based on the cross-validation results, adjust model parameters to refine its performance. This might involve tuning hyperparameters like learning rate, the number of trees in a random forest, or the number of hidden layers in a neural network.
-    
-    **Step 6: Final Model Training and Validation**
-    - Train Final Model: Once the best model and parameters are identified, train this final model on the entire dataset to maximize its learning.
-    - External Validation (Optional): If additional unseen data is available, validate the final model on this external dataset to further confirm its generalizability and robustness.
-    """)
+### Steps of Cross-Validation: A Step-by-Step Guide for Car Price Prediction
+
+#### Step 1: Prepare Your Data
+For our Car Price Prediction Challenge, we start with a dataset of 19,237 rows and 18 columns, featuring attributes such as car manufacturer, model, production year, engine volume, mileage, number of airbags, and more. The target variable is the car's "Price," which we aim to predict using regression techniques.
+
+- **Data Cleaning:** Address missing values, handle duplicates, and ensure consistency across all attributes. For instance, columns like "Mileage" may have outliers that need to be addressed, while "Levy" or "Engine volume" might have missing values that require imputation.
+
+- **Feature Selection and Engineering:** Perform exploratory data analysis to identify important features. You may create new features, such as age of the car (calculated from the production year) or adjust categorical variables like "Fuel type" using one-hot encoding, to enhance the model's predictive power.
+
+#### Step 2: Split the Data into K Folds
+To ensure the robustness of our car price prediction model, we employ K-fold cross-validation. This technique systematically splits the dataset into K equal subsets (folds), where each fold serves as a testing set once while the remaining K-1 folds are used for training.
+
+- **Divide Equally:** The dataset is divided into five equal folds (`k=5`), meaning each fold contains approximately 3,847 rows of car data.
+
+- **Random Shuffling:** Shuffle the dataset before splitting to avoid any order-related biases, as demonstrated in the code using `np.random.permutation`.
+
+#### Step 3: Execute the Cross-Validation
+For each fold, the model training and testing proceed as follows:
+
+- **Training Set Creation:** Use 4 of the 5 folds as the training set, which consists of about 15,390 rows.
+
+- **Testing Set Selection:** The remaining fold, with approximately 3,847 rows, is used as the testing set to evaluate the model's predictive accuracy.
+
+- **Model Training:** Train an Ordinary Least Squares (OLS) regression model using the training set. In the code, this is done with `sm.OLS(y_train, X_train).fit()`, where `X_train` and `y_train` represent the training features and target variable (Price).
+
+- **Model Testing:** Test the trained model on the validation set (testing fold), calculating the mean squared error (MSE) to assess performance. MSE measures the average squared difference between the predicted car prices and the actual prices, providing insight into the model's accuracy.
+
+#### Step 4: Evaluate and Aggregate the Results
+After iterating through all 5 folds, the model's performance metrics are averaged:
+
+- **Performance Metrics:** Record the MSE for each fold and compute the average MSE across all folds to measure the model's predictive accuracy on unseen data.
+
+- **Additional Metrics (Optional):** Other evaluation metrics such as R^2 score, explained variance, or mean absolute error can also be calculated for a more nuanced understanding of model performance.
+
+#### Step 5: Model Selection and Adjustment
+Based on the cross-validation results, make adjustments:
+
+- **Compare Models:** If multiple models are tested, compare the aggregated MSE or other metrics to choose the best-performing model. For example, you might test Ridge or Lasso regression and select the one with the lowest average MSE.
+
+- **Hyperparameter Tuning:** Adjust model parameters to improve performance. This could involve modifying the regularization strength for Ridge regression or selecting the optimal number of features based on feature selection results.
+
+#### Step 6: Final Model Training and Validation
+- **Train Final Model:** Once the best model and parameters are identified, train the final model on the entire dataset to maximize learning, ensuring all available data contribute to the final model.
+
+- **External Validation (Optional):** If additional unseen data is available, validate the final model on this external dataset to confirm its generalizability and ensure it accurately predicts car prices for new data points.
+""")
+
 
 
 if __name__ == "__main__":
