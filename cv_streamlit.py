@@ -78,9 +78,9 @@ def perform_cross_validation(x, y, k):
         scores[criteria] = cross_val_score(model, x, y, cv=k, scoring=criteria)
     return scores
 
-results_df = pd.read_csv('/Users/georgiavonminden/virtual-env/peachy-codes-copy/regression_f24/Final_Project/friday_attempts/model_training/all_results_df.csv')
+results_df = pd.read_csv('data/all_results_df.csv')
 
-df = pd.read_csv('/Users/georgiavonminden/virtual-env/peachy-codes-copy/regression_f24/Final_Project/friday_attempts/model_training/cleaned_car_price_prediction_door_fix.csv')
+df = pd.read_csv('data/cleaned_car_price_prediction_door_fix.csv')
 df['HasTurbo'] = df['HasTurbo'].astype(int)
 df.columns = [re.sub(' ', '_', col) for col in df.columns]
 df.columns = [re.sub('\.', '', col) for col in df.columns]
@@ -299,11 +299,11 @@ def main():
     
         # Data generation and plotting
     # x, y = generate_data()
-    df = pd.read_csv('/Users/georgiavonminden/virtual-env/peachy-codes-copy/regression_f24/Final_Project/friday_attempts/model_training/cleaned_car_price_prediction_door_fix.csv')
-    df = df.sample(n=500, random_state=42)
-    y = df['Price']
-    x = df.iloc[:, 1:]
-    cat_cols = [col for col in x.columns if df.dtypes[col] == 'object']
+    df = pd.read_csv('data/cleaned_car_price_prediction_door_fix.csv')
+    subset = df.sample(n=5000, random_state=42)
+    y = subset['Price']
+    x = subset.iloc[:, 1:]
+    cat_cols = [col for col in x.columns if subset.dtypes[col] == 'object']
     x = pd.get_dummies(x, cat_cols, drop_first=True)
     x = sm.add_constant(x, has_constant='add')
 
@@ -471,8 +471,8 @@ def main():
 
     The p-value, derived from the t-statistic, tells us if the feature’s impact is statistically significant:
 
-      •	A small p-value (typically < 0.05) indicates the feature is likely important. \n
-      •	A large p-value suggests the feature may not be contributing meaningfully and could be considered for removal.
+      -	A small p-value (typically < 0.05) indicates the feature is likely important. \n
+      -	A large p-value suggests the feature may not be contributing meaningfully and could be considered for removal.
 
     Balancing both coefficients and p-values helps us decide which features to retain. A feature with a high p-value might seem important based on its coefficient but could be unreliable. Conversely, a feature with a small coefficient and low p-value may still have a subtle but consistent impact.
 
@@ -484,9 +484,9 @@ def main():
 
     Our model confirms that features like Manufacturer, Leather, and other perks like larger engines significantly affect car resale prices, which aligns with common expectations:
 
-      •	Cars with more amenities (like airbags or turbo engines) are generally more valuable.
-      •	Manufacturer reputation plays a crucial role—certain brands command higher resale values.
-      •	Lower mileage and newer production years correlate with higher prices due to reduced wear and tear.
+      -	Cars with more amenities (like airbags or turbo engines) are generally more valuable.
+      -	Manufacturer reputation plays a crucial role—certain brands command higher resale values.
+      -	Lower mileage and newer production years correlate with higher prices due to reduced wear and tear.
 
     By verifying these factors with our model, we can show how data-driven insights confirm well-known assumptions about car values.
     """)
