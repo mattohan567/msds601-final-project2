@@ -1,0 +1,14 @@
+,0
+Intercept,-2725383.3144796863
+C(Fuel_type)[T.Diesel],2358.171711261112
+C(Fuel_type)[T.Hybrid],-8030.168023024942
+C(Fuel_type)[T.LPG],-7495.083188142126
+C(Fuel_type)[T.Petrol],-4127.677811219179
+C(Fuel_type)[T.Plug-in Hybrid],2597.029966260273
+C(HasTurbo)[T.1],7469.564327898903
+C(Gear_box_type)[T.Manual],5468.235477501414
+C(Gear_box_type)[T.Tiptronic],11384.130431144742
+C(Gear_box_type)[T.Variator],6809.068634369138
+Prod_year,1363.53384726643
+Engine_Volume,2881.3292431161503
+Airbags,-852.841665775427
