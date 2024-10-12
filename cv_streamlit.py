@@ -6,6 +6,11 @@ from sklearn.model_selection import cross_val_score
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 import statsmodels.api as sm
+import plotly.express as px
+import statsmodels.formula.api as smf
+import ast
+import re
+
 
 
 
@@ -73,6 +78,87 @@ def perform_cross_validation(x, y, k):
         scores[criteria] = cross_val_score(model, x, y, cv=k, scoring=criteria)
     return scores
 
+results_df = pd.read_csv('data/all_results_df.csv')
+
+df = pd.read_csv('data/cleaned_car_price_prediction_door_fix.csv')
+df['HasTurbo'] = df['HasTurbo'].astype(int)
+df.columns = [re.sub(' ', '_', col) for col in df.columns]
+df.columns = [re.sub('\.', '', col) for col in df.columns]
+x_cols = df.columns[1:]
+df = df.sample(n=2000, random_state=42)
+
+best_models = {
+    'MSE': results_df.sort_values('MSE').iloc[0],
+    '5-Fold CV MSE': results_df.sort_values('5-Fold_CV MSE').iloc[0],
+    '10-Fold CV MSE': results_df.sort_values('10-Fold_CV MSE').iloc[0],
+    'AIC': results_df.sort_values('AIC').iloc[0],
+    'BIC': results_df.sort_values('BIC').iloc[0],
+    'Adjusted R^2': results_df.sort_values('Adjusted R^2', ascending=False).iloc[0],
+    'PRESS': results_df.sort_values('PRESS').iloc[0]
+}
+
+# Function to create formula from predictors
+def create_formula(predictors_str):
+    # Convert string representation of list to actual list
+    predictors = ast.literal_eval(predictors_str)
+    
+    formula = "Price ~ " + " + ".join([f"C({p})" if df[p].dtype == 'object' else p for p in predictors])
+    return formula
+
+# Create formulas for each best model
+best_formulas = {criterion: create_formula(model['Predictors']) for criterion, model in best_models.items()}
+
+fitted_models = {}
+
+for criterion, formula in best_formulas.items():
+    model = smf.ols(formula, data=df).fit()
+    fitted_models[criterion] = model
+
+
+def plot_variable_importance_interactive(model, title, n=5):
+    """
+    Function to create an interactive Plotly bar chart showing the variable importance
+    with coefficients included in the hover information.
+    """
+    importance = abs(model.tvalues)[1:]  # Exclude intercept
+    importance = importance.sort_values(ascending=False)  # Sort descending
+    
+    if n is not None and n > 0:
+        importance = importance.head(n)  # Get the top n highest values
+    
+    # Create a DataFrame to include both t-statistics and coefficients
+    data = pd.DataFrame({
+        'Variable': importance.index,
+        '|t-statistic|': importance.values,
+        'Coefficient': model.params[importance.index]
+    })
+
+    # Create the bar chart with Plotly
+    fig = px.bar(
+        data, 
+        x='|t-statistic|', 
+        y='Variable', 
+        orientation='h', 
+        hover_data={'Coefficient': True, '|t-statistic|': True},
+        title=f'Top {n} Variable Importance based on t-statistic: {title}'
+    )
+    fig.update_layout(yaxis={'categoryorder': 'total ascending'})  # Ensure sorted plot
+    
+    # Display the chart in Streamlit
+    st.plotly_chart(fig)
+
+# Interactive section for Variable Importance Charts
+def interactive_variable_importance_section():
+    st.header("Interactive Variable Importance Charts")
+    st.write("Hover over each bar to see details about its t-statistic and coefficient.")
+
+    # Loop over the models and show interactive charts
+    for criterion, model in fitted_models.items():
+        plot_variable_importance_interactive(model, criterion, n=5)  # Show top 5 variables by default
+
+
+
+
 def main():
     st.title("Predicting Car Prices 🚗: A Journey Through Cross-Validation and Model Selection in Regression")
 
@@ -91,7 +177,7 @@ def main():
     our model's performance on different data slices, providing a clearer view of how it might perform with new data. 
     Alongside, metrics like AIC and BIC help guide us toward models that not only fit well but also avoid overcomplicating things.
 
-    Finally, we'll introduce tools to interpret feature importance through **t-statistics** and **SHAP values**, turning the 
+    Finally, we'll introduce tools to interpret feature importance through **t-statistics**, turning the 
     model's inner workings into actionable insights.
 
     Whether you're a data science enthusiast, a car aficionado, or just curious about machine learning, this blog will equip 
@@ -170,6 +256,8 @@ def main():
 
     By using this dataset, we aim to identify the most impactful features on car price and provide a predictive model that balances interpretability and predictive power.
 """)
+    
+
 
     # Extensive introduction and detailed explanation
     st.markdown("""
@@ -309,7 +397,8 @@ def main():
     By using these criteria together, we can select a model that balances predictive accuracy, interpretability, and simplicity.
     """)
 
-
+    interactive_variable_importance_section()
+    
 
 if __name__ == "__main__":
     main()
