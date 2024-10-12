@@ -205,7 +205,7 @@ def main():
         ### Visualizing K-Fold Cross Validation
         - In each fold, the model is trained on **K-1** subsets (blue) and tested on the remaining subset (red).
         - The process repeats for each fold, providing an average performance metric, giving a more reliable evaluation than a single train-test split.
-        - We will show this if we trained a model using all of the predictors provided
+        - We will show this if we trained a model using all of the predictors provided on a subset of 5000 observations
         - Adjust the slider below to see how different values of **K** affect the model's performance across folds.
     """)
     
@@ -284,14 +284,14 @@ def main():
 
     - **Akaike Information Criterion (AIC)**:
       - AIC evaluates models by considering the likelihood of the model and the number of predictors, penalizing model complexity. 
-      -  $ \\text{AIC} = 2k - 2\ln(L) $
-          - where $ k $ is the number of parameters (including the intercept) and $ L $ is the maximum likelihood of the model.
+      -  $ \\text{AIC} = 2p - 2\ln(L) $
+          - where $ p $ is the number of parameters (including the intercept) and $ L $ is the maximum likelihood of the model.
       - Lower AIC values indicate a better balance between fit and complexity.\n
 
     - **Bayesian Information Criterion (BIC)**:
       - Similar to AIC, BIC applies a stronger penalty for models with more parameters, especially useful with larger sample sizes. 
-      - $ \\text{BIC} = k \ln(n) - 2\ln(L) $  
-          - where $ n $ is the number of observations and $ k $ is the number of parameters.
+      - $ \\text{BIC} = p \ln(n) - 2\ln(L) $  
+          - where $ n $ is the number of observations and $ p $ is the number of parameters.
       - Lower BIC values indicate a preferred model, particularly for larger datasets.\n
 
     - **Predicted Residual Sum of Squares (PRESS)**:
@@ -302,8 +302,8 @@ def main():
 
     - **Adjusted R-Squared ($ R^2_{Adj} $)**:
       - Adjusted $ R^2 $ accounts for the number of predictors, adjusting the $ R^2 $ value to avoid overfitting. 
-      - $ R^2_{Adj} = 1 - \\left(1 - R^2\\right) \\frac{n - 1}{n - k - 1} $  
-          - where $ R^2 $ is the coefficient of determination, $ n $ is the number of observations, and $ k $ is the number of predictors.
+      - $ R^2_{Adj} = 1 - \\left(1 - R^2\\right) \\frac{n - 1}{n - p - 1} $  
+          - where $ R^2 $ is the coefficient of determination, $ n $ is the number of observations, and $ p $ is the number of predictors.
       - Higher adjusted $ R^2 $ values indicate a model that explains more variance without unnecessary complexity.
 
     By using these criteria together, we can select a model that balances predictive accuracy, interpretability, and simplicity.
