@@ -195,7 +195,7 @@ def main():
         st.write(f"Average {criteria} score: **{np.mean(scores[criteria])}**")
 
     st.markdown("""   
-    ### Steps of Cross-Validation: A Step-by-Step Guide for Car Price Prediction
+    ## Steps of Cross-Validation: A Step-by-Step Guide for Car Price Prediction
 
     #### Step 1: Prepare Your Data
     For our Car Price Prediction Challenge, we start with a dataset of 19,237 rows and 18 columns, featuring attributes such as car manufacturer, model, production year, engine volume, mileage, number of airbags, and more. The target variable is the car's "Price," which we aim to predict using regression techniques.
@@ -232,14 +232,44 @@ def main():
     #### Step 5: Model Selection and Adjustment
     Based on the cross-validation results, make adjustments:
 
-    - **Compare Models:** If multiple models are tested, compare the aggregated MSE or other metrics to choose the best-performing model. For example, you might test Ridge or Lasso regression and select the one with the lowest average MSE.
-
-    - **Hyperparameter Tuning:** Adjust model parameters to improve performance. This could involve modifying the regularization strength for Ridge regression or selecting the optimal number of features based on feature selection results.
+    - **Compare Models:** If multiple models are tested, compare the aggregated MSE or other metrics to choose the best-performing model. For example, you might test models with different predictors. 
 
     #### Step 6: Final Model Training and Validation
     - **Train Final Model:** Once the best model and parameters are identified, train the final model on the entire dataset to maximize learning, ensuring all available data contribute to the final model.
 
     - **External Validation (Optional):** If additional unseen data is available, validate the final model on this external dataset to confirm its generalizability and ensure it accurately predicts car prices for new data points.
+    """)
+    
+    st.markdown("""
+    ## Criteria for Selecting the Best Model in MLR
+    In multiple linear regression (MLR), selecting the best model involves balancing fit quality and model simplicity.
+    Here are four commonly used criteria for evaluating models, with their formulas:
+
+    - **Akaike Information Criterion (AIC)**:
+      - AIC evaluates models by considering the likelihood of the model and the number of predictors, penalizing model complexity. 
+      -  $ \\text{AIC} = 2k - 2\ln(L) $
+          - where $ k $ is the number of parameters (including the intercept) and $ L $ is the maximum likelihood of the model.
+      - Lower AIC values indicate a better balance between fit and complexity.
+
+    - **Bayesian Information Criterion (BIC)**:
+      - Similar to AIC, BIC applies a stronger penalty for models with more parameters, especially useful with larger sample sizes. 
+      - $ \\text{BIC} = k \ln(n) - 2\ln(L) $  
+          - where $ n $ is the number of observations and $ k $ is the number of parameters.
+      - Lower BIC values indicate a preferred model, particularly for larger datasets.
+
+    - **Predicted Residual Sum of Squares (PRESS)**:
+      - PRESS evaluates predictive accuracy by measuring how well the model predicts unseen data points. 
+        $ \text{PRESS} = \sum_{i=1}^{n} (y_i - \hat{y}_{-i})^2 $  
+      where $ y_i $ is the observed value for each point, and $ \hat{y}_{-i} $ is the predicted value for the $ i $-th observation, excluding it from the model fitting.
+      - Lower PRESS values suggest better predictive power.
+
+    - **Adjusted R-Squared ($ R^2_{Adj} $)**:
+      - Adjusted $ R^2 $ accounts for the number of predictors, adjusting the $ R^2 $ value to avoid overfitting. 
+      - $ R^2_{Adj} = 1 - \\left(1 - R^2\\right) \\frac{n - 1}{n - k - 1} $  
+          - where $ R^2 $ is the coefficient of determination, $ n $ is the number of observations, and $ k $ is the number of predictors.
+      - Higher adjusted $ R^2 $ values indicate a model that explains more variance without unnecessary complexity.
+
+    By using these criteria together, we can select a model that balances predictive accuracy, interpretability, and simplicity.
     """)
 
 
