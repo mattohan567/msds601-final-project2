@@ -351,6 +351,7 @@ def main():
     After iterating through all 5 folds, the model's performance metrics are averaged:
 
     - **Performance Metrics:** Record the MSE for each fold and compute the average MSE across all folds to measure the model's predictive accuracy on unseen data.
+        - MSE (Mean Squared Error) is the average of the squared residuals/errors for each observation in the validation/test set
 
     - **Additional Metrics (Optional):** Other evaluation metrics such as $$R^2, R^2_{Adj}, AIC, BIC,$$ and $$PRESS$$ for a more nuanced understanding of model performance.
 
@@ -397,6 +398,38 @@ def main():
     By using these criteria together, we can select a model that balances predictive accuracy, interpretability, and simplicity.
     """)
 
+    st.markdown("""
+    ## Model Selection Methodology
+
+    To build a high-performing used car price predictor, we developed a systematic approach to model selection that balances predictive accuracy, interpretability, and computational efficiency. Here’s an overview of our methodology:
+
+    1. **Data Subsetting**:
+      - The original dataset contained 19,000 observations. To optimize for time and computational resources, we randomly sampled 2,000 observations. This subset maintains data representativeness while reducing processing demands, enabling us to train and evaluate multiple models effectively.
+
+    2. **Exhaustive Subset Evaluation**:
+      - With 15 predictors, there are \(2^{15} - 1 = 32,767\) possible combinations. We trained a model for each combination, evaluating each subset to capture a thorough view of how different predictors impact model performance.
+      - This approach allowed us to comprehensively assess every possible subset, identifying optimal models that balance accuracy with interpretability.
+
+    3. **Evaluation Metrics**:
+      We evaluated each model subset using the following five metrics:
+      - **Adjusted \( R^2 \)**
+      - **Akaike Information Criterion (AIC)**
+      - **Bayesian Information Criterion (BIC)**
+      - **Predicted Residual Sum of Squares (PRESS)**
+      - **5-Fold and 10-Fold Cross-Validation MSE**
+
+    4. **Selecting the Best Model**:
+      - For each metric, we identified the best-performing model. Most metrics, including Adjusted \( R^2 \), AIC, PRESS, and both cross-validation MSEs, favored models with approximately **69 predictors**, suggesting that this number provides a solid balance of accuracy, interpretability, and predictive power.
+      - **Consistency Between 5- and 10-Fold Cross-Validation**: Both cross-validation metrics identified the same optimal model, which is a strong indicator of its stability and generalizability to new data.
+      - **BIC Divergence**: Unlike the other criteria, BIC preferred models with 12 or 13 predictors due to its stronger penalty on model complexity, which is in line with BIC’s goal of minimizing overfitting by favoring simpler models.
+
+    5. **Interpretation and Trade-offs**:
+      - The agreement across most metrics for models with 69 predictors is a strong indicator of robustness. These models provide a reliable balance between complexity and predictive power.
+      - The BIC-favored models with 12-13 predictors offer a simpler alternative, useful in cases where model interpretability or complexity is a higher priority.
+
+    By systematically evaluating every possible subset and comparing results across these metrics, we were able to select models that generalize well to unseen data and strike a balance between accuracy and simplicity, ensuring practical applicability for predictive analytics.
+    """)
+    
     interactive_variable_importance_section()
     
 
