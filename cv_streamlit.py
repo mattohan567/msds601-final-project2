@@ -78,9 +78,9 @@ def perform_cross_validation(x, y, k):
         scores[criteria] = cross_val_score(model, x, y, cv=k, scoring=criteria)
     return scores
 
-results_df = pd.read_csv('data/all_results_df.csv')
+results_df = pd.read_csv('/Users/georgiavonminden/virtual-env/peachy-codes-copy/regression_f24/Final_Project/friday_attempts/model_training/all_results_df.csv')
 
-df = pd.read_csv('data/cleaned_car_price_prediction_door_fix.csv')
+df = pd.read_csv('/Users/georgiavonminden/virtual-env/peachy-codes-copy/regression_f24/Final_Project/friday_attempts/model_training/cleaned_car_price_prediction_door_fix.csv')
 df['HasTurbo'] = df['HasTurbo'].astype(int)
 df.columns = [re.sub(' ', '_', col) for col in df.columns]
 df.columns = [re.sub('\.', '', col) for col in df.columns]
@@ -299,7 +299,7 @@ def main():
     
         # Data generation and plotting
     # x, y = generate_data()
-    df = pd.read_csv('data/cleaned_car_price_prediction_door_fix.csv')
+    df = pd.read_csv('/Users/georgiavonminden/virtual-env/peachy-codes-copy/regression_f24/Final_Project/friday_attempts/model_training/cleaned_car_price_prediction_door_fix.csv')
     df = df.sample(n=500, random_state=42)
     y = df['Price']
     x = df.iloc[:, 1:]
@@ -430,6 +430,66 @@ def main():
     By systematically evaluating every possible subset and comparing results across these metrics, we were able to select models that generalize well to unseen data and strike a balance between accuracy and simplicity, ensuring practical applicability for predictive analytics.
     """)
     
+    st.markdown("""
+    ## Understanding Feature Importance in Multiple Linear Regression
+
+    When working with multiple linear regression (MLR), we encounter multiple features (independent variables) that predict a target (the dependent variable). However, not all features contribute equally—some have a strong influence, while others may have minimal or even negative effects on the model’s predictions. Understanding feature importance helps us refine our model, focusing on the most impactful variables to create a simpler and more effective prediction tool.
+
+    Coefficients as a Measure of Feature Importance
+
+    In MLR, the coefficients for each feature provide insight into its effect on the target variable. A larger absolute value for a coefficient indicates a stronger influence. For example, in predicting car prices, a large negative coefficient for “Mileage” would suggest that cars with higher mileage tend to have significantly lower prices. Conversely, there could be a positive coefficient for a specific categorical variable's state (eg: brand being a luxury namesake like Mercedes).
+
+    The linear regression model is represented as:
+
+    $$
+    \hat{y} = \\beta_0 + \\beta_1 x_1 + \\beta_2 x_2 + \\dots + \\beta_n x_n
+    $$
+
+    Where:
+    - $\hat{y}$ is the predicted target (e.g., car price),
+    - $\\beta_0$ is the intercept (the value when all features are zero),
+    - $\\beta_1, \\beta_2, \\dots, \\beta_n$ are the coefficients for the features.
+    
+    A large coefficient means the feature has a strong relationship with the target. The sign (positive or negative) tells us the direction of that relationship. But coefficients alone don’t give the full picture, especially when features are on different scales. That’s where t-statistics come in.
+
+    T-Statistics: Gauging Feature Impact
+
+    The t-statistic helps us determine whether a feature’s coefficient is meaningful or just noise. It tests whether the feature significantly contributes to the model.
+
+    The t-statistic is calculated as:
+
+    $$ t = \\frac{\\hat{\\beta}}{SE(\\hat{\\beta})} $$
+
+    Where:
+
+    $\hat{\\beta}$ is the feature’s coefficient, and 
+    $SE(\hat{\\beta})$ is the standard error of the coefficient.
+
+    A larger t-statistic (in absolute terms) means we can be more confident that the feature is genuinely affecting the target variable.
+
+    P-Values: Determining Statistical Significance
+
+    The p-value, derived from the t-statistic, tells us if the feature’s impact is statistically significant:
+
+      •	A small p-value (typically < 0.05) indicates the feature is likely important. \n
+      •	A large p-value suggests the feature may not be contributing meaningfully and could be considered for removal.
+
+    Balancing both coefficients and p-values helps us decide which features to retain. A feature with a high p-value might seem important based on its coefficient but could be unreliable. Conversely, a feature with a small coefficient and low p-value may still have a subtle but consistent impact.
+
+    Visualizing Feature Importance
+
+    A simple way to compare feature importance is by visualizing the absolute values of t-statistics or coefficients in a bar plot. This helps identify which features have the most influence at a glance.
+
+    Aligning with Intuition
+
+    Our model confirms that features like Manufacturer, Leather, and other perks like larger engines significantly affect car resale prices, which aligns with common expectations:
+
+      •	Cars with more amenities (like airbags or turbo engines) are generally more valuable.
+      •	Manufacturer reputation plays a crucial role—certain brands command higher resale values.
+      •	Lower mileage and newer production years correlate with higher prices due to reduced wear and tear.
+
+    By verifying these factors with our model, we can show how data-driven insights confirm well-known assumptions about car values.
+    """)
     interactive_variable_importance_section()
     
 
