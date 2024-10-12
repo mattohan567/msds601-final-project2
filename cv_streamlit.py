@@ -5,6 +5,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import cross_val_score
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
+import statsmodels.api as sm
+
 
 
 def generate_data(n_points=100):
@@ -60,7 +62,7 @@ def plot_k_folds(n_points, k):
     ax.invert_yaxis()
     st.pyplot(fig)
 
-criterias = ['neg_mean_squared_error', 'r2']
+criterias = ['neg_mean_squared_error']
 def perform_cross_validation(x, y, k):
     """
     Performs K-fold cross-validation on a simple linear regression model.
@@ -68,7 +70,7 @@ def perform_cross_validation(x, y, k):
     model = LinearRegression()
     scores = {}
     for criteria in criterias:
-        scores[criteria] = cross_val_score(model, x.reshape(-1, 1), y, cv=k, scoring=criteria)
+        scores[criteria] = cross_val_score(model, x, y, cv=k, scoring=criteria)
     return scores
 
 def main():
@@ -96,6 +98,8 @@ def main():
     you with hands-on tools and techniques to select the best regression model for predicting used car prices. 
 
     Buckle up as we rev up our data engines and hit the road to better predictions!
+    
+    (Topic Extension: Cross Validation in MLR, Predictor Importance)
     """)
     
 
@@ -135,6 +139,37 @@ def main():
 
     Handling categorical variables helps create a more interpretable and comprehensive model, as it allows us to capture and analyze the impact of group-based features.
     """)
+    
+    st.markdown("""
+    ## Dataset: Car Price Prediction
+    This analysis uses data from the [Car Price Prediction Challenge on Kaggle](https://www.kaggle.com/datasets/deepcontractor/car-price-prediction-challenge), which contains features that help predict car prices. 
+
+    ### Dataset Description
+    The dataset includes various car attributes such as:
+    - **Manufactorer**: The brand of each car.
+    - **Year**: The year of manufacture.
+    - **Category**: The type of car (i.e. sedan)
+    - **Leather Interior**: If the car has a leather interior
+    - **Has Turbo**: If the car has a turbo engine
+    - **Engine Size**: Engine specifications that can influence price.
+    - **Fuel Type**: The type of fuel used, such as petrol, diesel, etc.
+    - **Cylinders**: The number of cylinders in the engine
+    - **Mileage**: The total distance a car has traveled, affecting resale value.
+    - **Transmission Type**: Automatic or manual transmission, which can influence price preferences.
+    - **Doors**: The number of doors, which may affect the car's appeal to certain buyers.
+    - **Gear Box Type**: The transmission type of the car
+    - **Drive Wheels**: Which wheels drive (i.e. Front)
+    - **Wheel**: The side of the car the driving wheel is on
+    - **Color**: The color of the car
+    - **Airbags**: The number of airbags in a car
+    - **Price**: The target variable, representing the car's price.
+    
+
+    ### Objective
+    Our goal is to use multiple linear regression (MLR) to predict car prices based on these attributes, selecting the best model through various criteria like AIC, BIC, PRESS, and Adjusted R².
+
+    By using this dataset, we aim to identify the most impactful features on car price and provide a predictive model that balances interpretability and predictive power.
+""")
 
     # Extensive introduction and detailed explanation
     st.markdown("""
@@ -170,17 +205,19 @@ def main():
         ### Visualizing K-Fold Cross Validation
         - In each fold, the model is trained on **K-1** subsets (blue) and tested on the remaining subset (red).
         - The process repeats for each fold, providing an average performance metric, giving a more reliable evaluation than a single train-test split.
+        - We will show this if we trained a model using all of the predictors provided
         - Adjust the slider below to see how different values of **K** affect the model's performance across folds.
     """)
     
         # Data generation and plotting
-    x, y = generate_data()
-    fig, ax = plt.subplots()
-    ax.scatter(x, y, color='blue', alpha=0.5)
-    ax.set_title("Generated Dataset")
-    ax.set_xlabel("Predictor")
-    ax.set_ylabel("Response")
-    ax.grid(True)
+    # x, y = generate_data()
+    df = pd.read_csv('data/cleaned_car_price_prediction_door_fix.csv')
+    df = df.sample(n=500, random_state=42)
+    y = df['Price']
+    x = df.iloc[:, 1:]
+    cat_cols = [col for col in x.columns if df.dtypes[col] == 'object']
+    x = pd.get_dummies(x, cat_cols, drop_first=True)
+    x = sm.add_constant(x, has_constant='add')
 
     # Slider for choosing K
     k = st.slider("Choose the number of folds for K-fold Cross-Validation", min_value=2, max_value=20, value=5, step=1)
@@ -241,7 +278,7 @@ def main():
     """)
     
     st.markdown("""
-    ## Criteria for Selecting the Best Model in MLR
+    ## Other Criteria for Selecting the Best Model in MLR
     In multiple linear regression (MLR), selecting the best model involves balancing fit quality and model simplicity.
     Here are four commonly used criteria for evaluating models, with their formulas:
 
@@ -249,19 +286,19 @@ def main():
       - AIC evaluates models by considering the likelihood of the model and the number of predictors, penalizing model complexity. 
       -  $ \\text{AIC} = 2k - 2\ln(L) $
           - where $ k $ is the number of parameters (including the intercept) and $ L $ is the maximum likelihood of the model.
-      - Lower AIC values indicate a better balance between fit and complexity.
+      - Lower AIC values indicate a better balance between fit and complexity.\n
 
     - **Bayesian Information Criterion (BIC)**:
       - Similar to AIC, BIC applies a stronger penalty for models with more parameters, especially useful with larger sample sizes. 
       - $ \\text{BIC} = k \ln(n) - 2\ln(L) $  
           - where $ n $ is the number of observations and $ k $ is the number of parameters.
-      - Lower BIC values indicate a preferred model, particularly for larger datasets.
+      - Lower BIC values indicate a preferred model, particularly for larger datasets.\n
 
     - **Predicted Residual Sum of Squares (PRESS)**:
       - PRESS evaluates predictive accuracy by measuring how well the model predicts unseen data points. 
-        $ \text{PRESS} = \sum_{i=1}^{n} (y_i - \hat{y}_{-i})^2 $  
+        $ \\text{PRESS} = \sum_{i=1}^{n} (y_i - \hat{y}_{-i})^2 $  
       where $ y_i $ is the observed value for each point, and $ \hat{y}_{-i} $ is the predicted value for the $ i $-th observation, excluding it from the model fitting.
-      - Lower PRESS values suggest better predictive power.
+      - Lower PRESS values suggest better predictive power.\n
 
     - **Adjusted R-Squared ($ R^2_{Adj} $)**:
       - Adjusted $ R^2 $ accounts for the number of predictors, adjusting the $ R^2 $ value to avoid overfitting. 
