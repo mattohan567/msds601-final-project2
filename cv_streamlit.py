@@ -160,8 +160,9 @@ def interactive_variable_importance_section():
 
 
 def main():
-    st.title("Predicting Car Prices 🚗: A Journey Through Cross-Validation and Model Selection in Regression")
-
+    st.title("""Predicting Car Prices 🚗: A Journey Through Cross-Validation and Model Selection in Regression""")
+    st.markdown("*By Tim Geum, Georgia von Minden, Matt Ohanian, and Iris Yu*")
+    
     st.markdown("""
     ## Introduction
 
@@ -511,8 +512,9 @@ def main():
 
     But for the purpose of our exercise, we have derived some strong models using some fundamental linear regression principles and learned the top features that play the most roles in determining car prices! It's very interesting to see that some features are as important as expected but some played more important roles than expected while other features were less important than expected. Using this example, I hope you learned more about choosing the best linear regression models as well as determining which features play the most important part in determining the response of that model!
 
-
     """)
+
+    st.markdown("*Happy Hunting!*")
 
 if __name__ == "__main__":
     main()
