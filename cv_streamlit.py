@@ -294,14 +294,14 @@ def main():
         ### Visualizing K-Fold Cross Validation
         - In each fold, the model is trained on **K-1** subsets (blue) and tested on the remaining subset (red).
         - The process repeats for each fold, providing an average performance metric, giving a more reliable evaluation than a single train-test split.
-        - We will show this if we trained a model using all of the predictors provided on a subset of 5000 observations
+        - We will show this if we trained a model using all of the predictors provided on a subset of 1000 observations
         - Adjust the slider below to see how different values of **K** affect the model's performance across folds.
     """)
     
         # Data generation and plotting
     # x, y = generate_data()
     df = pd.read_csv('data/cleaned_car_price_prediction_door_fix.csv')
-    subset = df.sample(n=5000, random_state=42)
+    subset = df.sample(n=1000, random_state=42)
     y = subset['Price']
     x = subset.iloc[:, 1:]
     cat_cols = [col for col in x.columns if subset.dtypes[col] == 'object']
