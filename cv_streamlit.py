@@ -161,7 +161,7 @@ def interactive_variable_importance_section():
 
 def main():
     st.title("""Predicting Car Prices 🚗: A Journey Through Cross-Validation and Model Selection in Regression""")
-    st.markdown("*By Tim Geum, Georgia von Minden, Matt Ohanian, and Iris Yu*")
+    st.markdown("*By Tim Geum, Georgia von Minden, Matthew Ohanian, and Iris Yu*")
     
     st.markdown("""
     ## Introduction
