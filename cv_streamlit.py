@@ -491,7 +491,28 @@ def main():
     By verifying these factors with our model, we can show how data-driven insights confirm well-known assumptions about car values.
     """)
     interactive_variable_importance_section()
+
+    st.markdown("""
     
+    ## Conclusion
+
+    As a result of our exercise, we answered our original question: "How much should this car cost?"
+
+     - **First**, we used cool model selection criteria such as k-fold cross validation (5 and 10 folds in our case) as well as other criteria such as AIC, BIC, and PRESS we learned in class. Finally, we trained the model on our dataset and extracted the best models using each criteria. This ultimately gave us a set of best models each with a set of features that predict the price of used cars. 
+
+     - **Second**, we used the feature importance tool 'variable importance plot' which determines how important each variable is in a model and how it relates to the predicted price of a used car. Using this plot, we saw some "repeat customers" in terms of top predictors that have high impact in determining a used car price across all models.
+        - Production year: The age of the car, unsurprisingly, is the top most important predictor for the price of a new car for all of our best models.
+        - Gearbox type: When the type was tiptronic, the gearbox seems to be the second most important predictor for a new car for most of our best models.
+        - Airbags: While airbags are crucial for safety, it had a higher impact in determining car price than expected.
+        - Manufacturer: We definitely do assume manufacturer (brand name) to be one of the strongest predictors for used car prices, but what was surprising is that impact was highest when the brand is GAZ which are known to make cheap cars.
+        - Engine turbo: A strong predictor in car price, especially for prospective buyers who care about car perfromance.
+    
+    One of the interesting things in this exercise is that we do not see mileage to be the top 5 predictors of car prices, at least in our models. It's possible that, because mileage has a wide scatter (0 to 100,000km+), its effect was relatively unimportant. There are other things that could have made our exercise more complex and interesting such as the degree of wear-and-tear, parts replaced, remodeling, as well as supply/demand. 
+
+    But for the purpose of our exercise, we have derived some strong models using some fundamental linear regression principles and learned the top features that play the most roles in determining car prices! It's very interesting to see that some features are as important as expected but some played more important roles than expected while other features were less important than expected. Using this example, I hope you learned more about choosing the best linear regression models as well as determining which features play the most important part in determining the response of that model!
+
+
+    """)
 
 if __name__ == "__main__":
     main()
